@@ -1,0 +1,25 @@
+version: "3"
+
+services:
+  sqlite3:
+    image: nouchka/sqlite3:latest
+    stdin_open: true
+    tty: true
+  app:
+    build: .
+    ports:
+      - "5001:8080"
+    networks:
+      - originai
+  client:
+    build:
+      context: ./client/images-rating/
+      dockerfile: Dockerfile
+    image: images-rating-client
+    ports:
+      - "3001:3000"
+    networks:
+      - originai
+networks:
+   originai :
+    external: true
