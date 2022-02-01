@@ -14,6 +14,10 @@ follow this instructions:
   
 If  the build passed correctly you will see a page with images. you can rate them by pressing like or dislike icons in the bottom of each image.
 You can export the rating to a csv file by clicking on the csv icon in the top left.
+In order to see the csv you have to search in the containers file system through the bash/bin.
+
+To close the app:
+docker-compose down --build
 
 Enjoy!!!
 
