@@ -8,9 +8,8 @@ const ImagesDisplay=()=>{
       fetch("http://localhost:5001/populate")
         .then(response => response.json())
         .then(data =>{
-        console.log("useeffect",data)
-         setImagesArray(data)});
-
+         setImagesArray(data)})
+         .catch(err=>console.log(err))
       },[]);
     const handleCSV = async ()=>{
         console.log("csv")

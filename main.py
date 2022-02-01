@@ -6,7 +6,7 @@ from dataclasses import dataclass
 from flask_cors import CORS
 import pandas
 import os
-app = Flask(__name__, static_folder="./images-rating/build")
+app = Flask(__name__)
 CORS(app)
 app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///images-rating.db"
 # Optional: But it will silence the deprecation warning in the console.
@@ -32,24 +32,23 @@ class Image(db.Model):
 
 db.create_all()
 # Serve React App
-@app.route('/', defaults={'path': ''})
-@app.route('/')
-def serve():
-    # if path != "" and os.path.exists(app.static_folder + '/' + path):
-    #     return send_from_directory(app.static_folder, path)
-    # else:
-    return send_from_directory(app.static_folder, "index.html")
-
-@app.route("/<path:path>")
-def static_proxy(path):
-    """static folder serve"""
-    file_name = path.split("/")[-1]
-    dir_name = os.path.join(app.static_folder, "/".join(path.split("/")[:-1]))
-    return send_from_directory(dir_name, file_name)
+# @app.route('/', defaults={'path': ''})
+# @app.route('/')
+# def serve():
+#     # if path != "" and os.path.exists(app.static_folder + '/' + path):
+#     #     return send_from_directory(app.static_folder, path)
+#     # else:
+#     return send_from_directory(app.static_folder, "index.html")
+#
+# @app.route("/<path:path>")
+# def static_proxy(path):
+#     """static folder serve"""
+#     file_name = path.split("/")[-1]
+#     dir_name = os.path.join(app.static_folder, "/".join(path.split("/")[:-1]))
+#     return send_from_directory(dir_name, file_name)
 
 def populateDB():
     try:
-        # 563492ad6f917000010000016785fe3645224defb9b412bacc72b345
         headers_dict = {"Authorization": "563492ad6f917000010000016785fe3645224defb9b412bacc72b345"}
         response = requests.get("https://api.pexels.com/v1/curated?per_page=100", headers=headers_dict)
         for image in response.json()["photos"]:
@@ -59,7 +58,7 @@ def populateDB():
             db.session.commit()
     except:
         print("An exception occurred")
-
+        raise ValueError('Couldnt fetch the Images')
 
 @app.route('/like/<id>', methods=['GET'])
 def like(id):
@@ -98,11 +97,13 @@ def exportcsv():
 
 @app.route('/populate')
 def home():
-    # db.session.query(Image).delete()
     all_images = db.session.query(Image).all()
     if not len(all_images) > 0:
-        populateDB()
-        all_images = db.session.query(Image).all()
+        try:
+            populateDB()
+            all_images = db.session.query(Image).all()
+        except:
+            return "Couldnt fetch the Images", 400
     return jsonify(all_images)
 
 

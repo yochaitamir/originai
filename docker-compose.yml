@@ -9,8 +9,6 @@ services:
     build: .
     ports:
       - "5001:8080"
-    networks:
-      - originai
   client:
     build:
       context: ./client/images-rating/
@@ -18,8 +16,5 @@ services:
     image: images-rating-client
     ports:
       - "3001:3000"
-    networks:
-      - originai
-networks:
-   originai :
-    external: true
+
+

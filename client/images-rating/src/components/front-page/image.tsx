@@ -9,17 +9,18 @@
         const [dislikes,setDisLikes]=useState(item.dislikes)
 
         const handleLikeButton=(item)=>{
-            setLikes(likes+1)
             fetch(`http://localhost:5001/like/${item.image_id}`)
                 .then(response => response.json())
-                .then(data => console.log(data));
+                .then(data => setLikes(likes+1))
+                .catch(err=>console.log(err))
                 }
 
         const handleDislikeButton=(item)=>{
-            setDisLikes(dislikes+1)
+
             fetch(`http://localhost:5001/dislike/${item.image_id}`)
                 .then(response => response.json())
-                .then(data => console.log(data));
+                .then(data => setDisLikes(dislikes+1))
+                .catch(err=>console.log(err))
                 }
 
          return <div className="conatinerWrraper">
